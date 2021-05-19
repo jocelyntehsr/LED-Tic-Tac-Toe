@@ -37,3 +37,7 @@ mark a position that has been marked previously. Each position can only have one
 colours marked.
 
 Once a line is formed by three LEDs of the same colour (regardless of horizontally/ diagonally/ vertically), then the LCD display will indicate that the player wins while the game will be restarted.
+
+# Demonstration 
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/4O0Vv9Xb9yI/0.jpg)](https://www.youtube.com/watch?v=4O0Vv9Xb9yI)
