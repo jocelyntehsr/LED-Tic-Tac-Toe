@@ -1,0 +1,344 @@
+#include "mbed.h"
+#include "TextLCD.h"
+
+TextLCD MyLCD(PB_0, PB_3, PB_4, PB_5, PB_6, PB_10);
+DigitalOut LED11[]={(PC_0),(PC_1),(PC_2),(PC_3),(PC_4),(PC_5),(PC_6),(PC_7),(PC_8)};
+DigitalOut LED22[]={(PA_0),(PA_1),(PB_2),(PB_1),(PA_4),(PA_5),(PA_6),(PA_7),(PA_8)};
+DigitalIn locking(PC_10);
+DigitalIn moving(PC_9);
+
+int t; //global counter to count how many LEDs are lighted up
+
+void function1 (void) 				//function for red LED
+{						//aka Player 1
+    int j;						//counter to detect LED position
+
+    j=0; 						//initialize counter=0
+
+    while (locking==0) 				//while LED is not locked
+    {
+        MyLCD.cls();
+        MyLCD.printf("Player 1 playing");	//LCD display player 1
+	
+        while (LED11[j]==1 || LED22[j]==1)	//if the next red or blue LED is lighted up
+                j++;					//program will jump to the next next position
+						//and go to the position where no LED is lighted up
+    
+        LED11[j]=1;				//LED keeps blinking 
+        wait(0.5);					//before it is being locked
+        LED11[j]=0;
+        wait(0.5);
+                    
+        if (moving==1)				//Program will move to the next LED
+        {						//when moving button is pressed
+            j++;
+        }
+
+    }
+    
+    LED11[j]=1;					//once LED is locked
+    wait(1);					//it remains turned on 
+}
+
+void function2(void)				//function for blue LED
+{						//aka player 2
+    int k;					
+    						//exact same code with different var name
+    k=0; 					//please refer back to function1 for explanation
+
+    while (locking==0)
+    {
+        MyLCD.cls();
+        MyLCD.printf("Player 2 playing");
+
+        while (LED11[k]==1 || LED22[k]==1)
+                k++;
+        
+        LED22[k]=1;
+        wait(0.5);
+        LED22[k]=0;
+        wait(0.5);
+                    
+        if (moving==1)
+        {
+            k++;
+        }
+ 
+    }
+    LED22[k]=1;
+    wait(1);
+}
+
+void redcheck(void)					//function to check if Player 1 wins
+{
+    int i;							//counter to detect LED position 
+    
+        //condition 1
+        if (LED11[0] && LED11[1] && LED11[2])	//if red LEDs occupy position 0,1,2
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Red wins!"); //LCD display Player 1 wins
+            for (i=0;i<9;i++)
+            {
+                LED11[i]=0;					//all LEDs are turned off
+                LED22[i]=0;
+            }
+            wait(3);
+            t=1;						//restart the game by resetting counter
+        }							//that counts how many LEDs are lighted up
+        //condition 2
+        else if (LED11[3] && LED11[4] && LED11[5])  	//if red LEDs occupy position 3,4,5
+        {
+            MyLCD.cls();					//same coding as condition 1
+            MyLCD.printf("Congratulations! Red wins!");
+            for (i=0;i<9;i++)
+            {
+                LED11[i]=0;
+                LED22[i]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 3
+        else if (LED11[6] && LED11[7] && LED11[8]) 	//if red LEDs occupy position 6,7,8
+        {
+            MyLCD.cls();					//same coding as condition 1
+            MyLCD.printf("Congratulations! Red wins!"); //repeating same coding for rest of 
+            for (i=0;i<9;i++)				//the conditions
+            {
+                LED11[i]=0;
+                LED22[i]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 4
+        else if (LED11[0] && LED11[3] && LED11[6])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Red wins!");
+            for (i=0;i<9;i++)
+            {
+                LED11[i]=0;
+                LED22[i]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 5
+        else if (LED11[1] && LED11[4] && LED11[7])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Red wins!");
+            for (i=0;i<9;i++)
+            {
+                LED11[i]=0;
+                LED22[i]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 6
+        else if (LED11[2] && LED11[5] && LED11[8])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Red wins!");
+            for (i=0;i<9;i++)
+            {
+                LED11[i]=0;
+                LED22[i]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 7
+        else if (LED11[0] && LED11[4] && LED11[8])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Red wins!");
+            for (i=0;i<9;i++)
+            {
+                LED11[i]=0;
+                LED22[i]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 8
+        else if (LED11[2] && LED11[4] && LED11[6])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Red wins!");
+            for (i=0;i<9;i++)
+            {
+                LED11[i]=0;
+                LED22[i]=0;
+            }
+            wait(3);
+            t=1;
+        }
+
+}
+
+void bluecheck(void)					//function to check if Player 2 wins
+{
+    int q; 						//counter to detect LED position
+    
+        //condition 1
+        if (LED22[0] && LED22[1] && LED22[2])	//if blue LEDs occupy position 0,1,2
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Blue wins!"); //LCD shows Player 2 wins
+            for (q=0;q<9;q++)
+            {
+                LED11[q]=0;				//all LEDs are turned off
+                LED22[q]=0;
+            }
+            wait(3);
+            t=1;						//restart the game by resetting counter
+        }							//that counts number of lighted up LED
+        //condition 2
+        else if (LED22[3] && LED22[4] && LED22[5]) 	//if blue LEDs occupy position 4,5,6
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Blue wins!"); //same coding as condition 1
+            for (q=0;q<9;q++)
+            {
+                LED11[q]=0;
+                LED22[q]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 3
+        else if (LED22[6] && LED22[7] && LED22[8])	//if blue LEDs occupy position 6,7,8
+        {
+            MyLCD.cls();					//same coding as condition 1	
+            MyLCD.printf("Congratulations! Blue wins!"); //the coding repeats for rest of
+            for (q=0;q<9;q++)				//the conditions
+            {
+                LED11[q]=0;
+                LED22[q]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 4
+        else if (LED22[0] && LED22[3] && LED22[6])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Blue wins!");
+            for (q=0;q<9;q++)
+            {
+                LED11[q]=0;
+                LED22[q]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 5
+        else if (LED22[1] && LED22[4] && LED22[7])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Blue wins!");
+            for (q=0;q<9;q++)
+            {
+                LED11[q]=0;
+                LED22[q]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 6
+        else if (LED22[2] && LED22[5] && LED22[8])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Blue wins!");
+            for (q=0;q<9;q++)
+            {
+                LED11[q]=0;
+                LED22[q]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 7
+        else if (LED22[0] && LED22[4] && LED22[8])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Blue wins!");
+            for (q=0;q<9;q++)
+            {
+                LED11[q]=0;
+                LED22[q]=0;
+            }
+            wait(3);
+            t=1;
+        }
+        //condition 8
+        else if (LED22[2] && LED22[4] && LED22[6])
+        {
+            MyLCD.cls();
+            MyLCD.printf("Congratulations! Blue wins!");
+            for (q=0;q<9;q++)
+            {
+                LED11[q]=0;
+                LED22[q]=0;
+            }
+            wait(3);
+            t=1;
+        }
+}
+
+int main ()
+{
+    int counting;					//detects whether player 1 or player 2 is playing
+    int z; 					//counter to detect LED positions	
+    
+    t=1;						//initialize first LED 
+    
+    while (1)
+    {
+       
+        counting=t%2;				//detects if it is odd or even LED lighting up 
+						//(odd=Player 1, even=Player 2)
+        if (t<10)					//if not all LEDs are lighted up
+        {
+            switch (counting)
+            {
+            case 0: function2();        		//Player 2 enters this function
+                    break;
+            case 1: function1();			//Player 1 enters this function
+                    break;
+            }
+        }
+        
+        if (t>4 && t<10)				//once Player 1 starts plotting her third LED,
+        {						//the program checks for any winning condition
+            switch (counting)
+            {
+            case 1: redcheck();			//checking for red LED
+                    break;
+            case 0: bluecheck();			//checking for blue LED	
+                    break;
+            }
+        }
+        
+        if (t==10)					//once all LEDs are lighted up
+        {						//it is a draw. 
+            MyLCD.cls();
+            MyLCD.printf("It's a draw!");
+            for (z=0;z<9;z++)
+            {
+                LED11[z]=0;			//all LEDs are turned off
+                LED22[z]=0;
+            }
+            wait(3);
+            t=1;					//restart the game by resetting counter
+        }						//that counts how many LEDs are lighted up	
+        
+        t++;					//counter for lighted up LED will be incremented 
+						//after each round
+    }
+       
+}
